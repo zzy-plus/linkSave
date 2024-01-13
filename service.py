@@ -3,6 +3,7 @@ import shutil
 from ftplib import FTP
 import zipfile
 import json
+import winreg
 
 #解压zip
 def unzip(zip_file_path, extract_folder):
@@ -38,9 +39,16 @@ def ftpDownload(host, username, passwd, remoteFilePath, localFilePath):
 
 def pyExec(cmd):
     return os.popen(cmd).readlines()
-
-def getUserDir():
-    return os.path.expanduser('~')
+def getUserDoc():
+    subkey = r"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"
+    # 打开注册表键
+    registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, subkey)
+    # 读取注册表值
+    value, _ = winreg.QueryValueEx(registry_key, "Personal")
+    # 关闭注册表键
+    winreg.CloseKey(registry_key)
+    print(value)
+    return value
 
 def copyFile(source,target):
     cmd = "Xcopy " + source + " " + target + " /E /Y /I"
@@ -48,13 +56,13 @@ def copyFile(source,target):
     print(ret)
 
 def readData():
-    saveDataPath = getUserDir() + r'\Documents\Euro Truck Simulator 2\save_dat.json'
+    saveDataPath = getUserDoc() + r'\Euro Truck Simulator 2\save_dat.json'
     with open(saveDataPath,'r') as f:
         saveData = json.load(f)
         return saveData['fileList']
 
 def writeData(filename):
-    files = os.listdir(getUserDir() + r'\Documents\Euro Truck Simulator 2')
+    files = os.listdir(getUserDoc() + r'\Euro Truck Simulator 2')
     if 'save_dat.json' in files:
         file_list = readData()
     else:
@@ -63,18 +71,18 @@ def writeData(filename):
         return
     file_list.append(filename)
 
-    saveDataPath = getUserDir() + r'\Documents\Euro Truck Simulator 2\save_dat.json'
+    saveDataPath = getUserDoc() + r'\Euro Truck Simulator 2\save_dat.json'
     content = {'fileList': file_list}
     with open(saveDataPath,'w') as f:
         json.dump(content, f)
 
 def clearData():
-    saveDataPath = getUserDir() + r'\Documents\Euro Truck Simulator 2\save_dat.json'
+    saveDataPath = getUserDoc() + r'\Euro Truck Simulator 2\save_dat.json'
     with open(saveDataPath,'w') as f:
         json.dump({'fileList':[]}, f)
 
 def removeFiles(filenames):
-    folder_path = getUserDir() + '\\Documents\\Euro Truck Simulator 2\\profiles\\'
+    folder_path = getUserDoc() + '\\Euro Truck Simulator 2\\profiles\\'
     for filename in filenames:
         try:
             shutil.rmtree(folder_path + filename)
@@ -110,23 +118,6 @@ def renameFiles(path,mode):
 
 
 if __name__ == '__main__':
-    # ftp_host = '121.37.222.191'  # ftp服务器地址
-    # ftp_user = 'anonymous'  # 匿名登陆用户名用anonymous
-    # ftp_passwd = '123@qq.cn'  # 密码随便
-    # filename = 'zip1.zip'
-    # remote_file = '/' + filename  # 远程文件按路径
-    # local_file = getUserDir() + '\\Documents\\' + filename  # 文件保存路径
-    #
-    # ftpDownload(ftp_host, ftp_user, ftp_passwd, remote_file, local_file)
-    #
-    # extract_path = getUserDir() + r'\Documents\Euro Truck Simulator 2\profiles'
-    # unzip(local_file,extract_path)
-
-
-
-    # with open('res/props.dat','r',encoding='utf-8') as f:
-    #     path1 = f.readline().strip()
-    #     renameFiles(path1,1)
     pass
 
 
