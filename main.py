@@ -13,7 +13,7 @@ def installSaves():
 
     filename = 'zip1.zip'
     remote_file = '/' + filename  # 远程文件路径
-    extract_path = getUserDoc() + r'\Documents\Euro Truck Simulator 2\profiles'  # 存档路径
+    extract_path = getUserDoc() + r'\Euro Truck Simulator 2\profiles'  # 存档路径
     local_file = extract_path + '\\' + filename  # 文件保存路径
 
     # 下载并解压
@@ -39,7 +39,7 @@ def getRemote():
 
 def onSave(value, dic, saveName):
     # 默认只加载第一个存档
-    game_sii_path = getUserDoc() + '\\Documents\\Euro Truck Simulator 2\\profiles\\' + saveName + '\\save\\1\\game.sii'
+    game_sii_path = getUserDoc() + '\\Euro Truck Simulator 2\\profiles\\' + saveName + '\\save\\1\\game.sii'
     # 解密
     try:
         command = f'SII_Decrypt \"{game_sii_path}\"'

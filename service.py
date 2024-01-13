@@ -23,7 +23,6 @@ def ftpDownload(host, username, passwd, remoteFilePath, localFilePath):
         ftp = FTP()
         ftp.connect(host)
         ftp.login(username, passwd)
-        print('登陆成功')
         # 打开本地文件以写入下载的数据
         with open(localFilePath, 'wb') as local_file_obj:
             # 下载文件
