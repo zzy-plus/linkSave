@@ -111,16 +111,16 @@ if __name__ == '__main__':
 
         # 按钮
         btn1 = tk.Button(frame, text='一键安装活动存档', font=('宋体', 12), width=18, height=2, command=installSaves)
-        btn1.place(x=50, y=50)
+        btn1.place(x=40, y=50)
         btn2 = tk.Button(frame, text='一键卸载活动存档', font=('宋体', 12), width=18, height=2, command=uninstallSaves)
-        btn2.place(x=50, y=100)
+        btn2.place(x=40, y=100)
 
-        tk.Label(frame, text='选择传送位置:', font=('宋体', 12)).place(x=250, y=50)
-        combox1 = ttk.Combobox(frame, state='readonly')
+        tk.Label(frame, text='选择传送位置:', font=('宋体', 12)).place(x=235, y=50)
+        combox1 = ttk.Combobox(frame, state='readonly', width= 28)
         combox1.config(values=values)
-        combox1.place(x=250, y=80)
-        tk.Button(frame, text='传送', font=('宋体', 12), width=12, height=1,
-                  command=lambda: onSave(combox1.get(), dic, saveName)).place(x=250, y=115)
+        combox1.place(x=235, y=80)
+        tk.Button(frame, text='传送', font=('宋体', 12), width=22, height=1,
+                  command=lambda: onSave(combox1.get(), dic, saveName)).place(x=235, y=115)
 
         # tk.Label(frame,text="XM散人物流运输车队接待群:187174917", font=('黑体', 12)).place(x=230, y=170, anchor='center')
 
