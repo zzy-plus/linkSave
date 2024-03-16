@@ -3,7 +3,15 @@ from tkinter import messagebox, ttk, simpledialog
 import subprocess
 from service import *
 import requests
+import sys
 
+# pyinstaller -w -F main.py --add-data ".\\res\\*;.\\res\\" --icon=./res/favicon.ico
+def resource_path(relative_path):
+    if getattr(sys, 'frozen', False):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 def installSaves():
     ftp_host = '121.37.222.191'  # ftp服务器地址
@@ -42,7 +50,8 @@ def onSave(value, dic, saveName):
     game_sii_path = getUserDoc() + '\\Euro Truck Simulator 2\\profiles\\' + saveName + '\\save\\1\\game.sii'
     # 解密
     try:
-        command = f'SII_Decrypt \"{game_sii_path}\"'
+        decryptPath = resource_path('/res/SII_Decrypt')
+        command = f'{decryptPath} \"{game_sii_path}\"'
         subprocess.run(command, shell=True, text=True)
     except Exception as e:
         pass
@@ -84,13 +93,13 @@ if __name__ == '__main__':
         window.title('xm接档.')
         window.geometry('500x355')
         window.resizable(width=False, height=False)
-        window.iconphoto(True, tk.PhotoImage(file="res/icon1.png"))
+        window.iconphoto(True, tk.PhotoImage(file=resource_path("res/icon1.png")))
 
         # 创建画布
         canvas = tk.Canvas(window, width=400, height=200)
         canvas.place(x=250, y=150, anchor='center')
         # 加载图片
-        image = tk.PhotoImage(file='res/logo.png')
+        image = tk.PhotoImage(file=resource_path('res/logo.png'))
         # 渲染
         canvas.create_image(200, 80, anchor='center', image=image)
 
