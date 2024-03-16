@@ -90,7 +90,7 @@ if __name__ == '__main__':
     try:
 
         window = tk.Tk()
-        window.title('xm接档.')
+        window.title('XM接档器')
         window.geometry('500x355')
         window.resizable(width=False, height=False)
         window.iconphoto(True, tk.PhotoImage(file=resource_path("res/icon1.png")))
