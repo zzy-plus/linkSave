@@ -50,11 +50,12 @@ def onSave(value, dic, saveName):
     game_sii_path = getUserDoc() + '\\Euro Truck Simulator 2\\profiles\\' + saveName + '\\save\\1\\game.sii'
     # 解密
     try:
-        decryptPath = resource_path('/res/SII_Decrypt')
+        decryptPath = resource_path('.\\res\\SII_Decrypt')
         command = f'{decryptPath} \"{game_sii_path}\"'
         subprocess.run(command, shell=True, text=True)
+        print(command)
     except Exception as e:
-        pass
+        print(e)
     # 修改
     with open(game_sii_path, 'r', encoding='utf-8') as f:
         contents = f.read()
