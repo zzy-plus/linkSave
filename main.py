@@ -31,6 +31,8 @@ def installSaves():
 
     messagebox.showinfo('提示', '下载成功')
 
+    subprocess.run(f'explorer {extract_path}', shell= True)
+
 
 def uninstallSaves():
     file_list = readData()
@@ -92,7 +94,7 @@ if __name__ == '__main__':
 
         window = tk.Tk()
         window.title('XM接档器')
-        window.geometry('500x355')
+        window.geometry('500x310')  #500x300
         window.resizable(width=False, height=False)
         window.iconphoto(True, tk.PhotoImage(file=resource_path("res/icon1.png")))
 
@@ -116,23 +118,23 @@ if __name__ == '__main__':
         tk.Label(window, text="XM散人物流运输", font=('黑体', 22)).place(x=250, y=40, anchor='center')
 
         # 框架
-        frame = tk.Frame(window, width=460, height=200)
+        frame = tk.Frame(window, width=460, height=110)
         frame.place(x=250, y=200, anchor='n')
 
         # 按钮
         btn1 = tk.Button(frame, text='一键安装活动存档', font=('宋体', 12), width=18, height=2, command=installSaves)
-        btn1.place(x=40, y=50)
+        btn1.place(x=40, y=10)
         btn2 = tk.Button(frame, text='一键卸载活动存档', font=('宋体', 12), width=18, height=2, command=uninstallSaves)
-        btn2.place(x=40, y=100)
+        btn2.place(x=40, y=60)
 
-        tk.Label(frame, text='选择传送位置:', font=('宋体', 12)).place(x=235, y=50)
+        tk.Label(frame, text='选择传送位置:', font=('宋体', 12)).place(x=220, y=10)
         combox1 = ttk.Combobox(frame, state='readonly', width= 28)
         combox1.config(values=values)
-        combox1.place(x=235, y=80)
-        tk.Button(frame, text='传送', font=('宋体', 12), width=22, height=1,
-                  command=lambda: onSave(combox1.get(), dic, saveName)).place(x=235, y=115)
+        combox1.place(x=220, y=40)
+        tk.Button(frame, text='传送', font=('宋体', 12), width=16, height=1,
+                  command=lambda: onSave(combox1.get(), dic, saveName)).place(x=220, y=75)
 
-        # tk.Label(frame,text="XM散人物流运输车队接待群:187174917", font=('黑体', 12)).place(x=230, y=170, anchor='center')
+        tk.Button(frame, text='打开教程', font=('宋体', 12), foreground='red', command= openPage).place(x=362, y=75)
 
         window.mainloop()
     except Exception as e:

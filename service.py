@@ -4,6 +4,15 @@ from ftplib import FTP
 import zipfile
 import json
 import winreg
+import subprocess
+
+#打开教程页面
+def openPage():
+    cmd = "start https://b23.tv/CgZCX1E"
+    try:
+        subprocess.run(cmd, shell=True)
+    except Exception as e:
+        print(e)
 
 #解压zip
 def unzip(zip_file_path, extract_folder):
