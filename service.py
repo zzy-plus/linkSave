@@ -5,10 +5,11 @@ import zipfile
 import json
 import winreg
 import subprocess
+from tkinter import filedialog, messagebox
 
 #打开教程页面
-def openPage():
-    cmd = "start https://b23.tv/CgZCX1E"
+def openPage(url):
+    cmd = f"start {url}"
     try:
         subprocess.run(cmd, shell=True)
     except Exception as e:
@@ -120,6 +121,53 @@ def renameFiles(path,mode):
         for file in files:
             if file.startswith('1dlc_'):
                 os.rename(path + '\\' + file, path + '\\' + file[1:])
+
+
+def setConfigFilesPath():
+    dirPath = filedialog.askdirectory() # 选择路径
+    if dirPath:
+        print(dirPath)
+        userHome = os.path.expanduser("~")
+        tempPath = userHome + '\\AppData\\Roaming\\linkSave'
+        if not os.path.exists(tempPath):
+            os.makedirs(tempPath)
+        # 保存路径
+        with open(tempPath + '\\config.cfg', 'w', encoding='utf-8') as f:
+            f.write(dirPath.strip())
+        messagebox.showinfo('提示', '设置成功！\n注意：这个路径仅需设置一次，直到你想更改配置文件')
+
+
+def copyConfigFiles(savePath):
+    # 检测配置文件路径是否设置
+    filePath = os.path.expanduser("~") + '\\AppData\\Roaming\\linkSave\\config.cfg'
+    if not os.path.exists(filePath):
+        return
+    with open(filePath, 'r', encoding='utf-8') as f:
+        configFilesPath = f.readline()
+
+    copyList = []
+    if os.path.exists(configFilesPath + '\\config.cfg'):
+        try:
+            shutil.copy(configFilesPath + '\\config.cfg', savePath + '\\config.cfg')
+            copyList.append('config.cfg')
+        except Exception as e:
+            pass
+
+    if os.path.exists(configFilesPath + '\\config_local.cfg'):
+        try:
+            shutil.copy(configFilesPath + '\\config_local.cfg', savePath + '\\config_local.cfg')
+            copyList.append('config_local.cfg')
+        except Exception as e:
+            pass
+
+    if os.path.exists(configFilesPath + '\\controls.sii'):
+        try:
+            shutil.copy(configFilesPath + '\\controls.sii', savePath + '\\controls.sii')
+            copyList.append('controls.sii')
+        except Exception as e:
+            pass
+
+    return copyList
 
 
 

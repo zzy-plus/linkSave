@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox, ttk, simpledialog
-import subprocess
 from service import *
 import requests
 import sys
@@ -21,17 +20,23 @@ def installSaves():
 
     filename = 'zip1.zip'
     remote_file = '/' + filename  # 远程文件路径
-    extract_path = getUserDoc() + r'\Euro Truck Simulator 2\profiles'  # 存档路径
-    local_file = extract_path + '\\' + filename  # 文件保存路径
+    profiles_path = getUserDoc() + r'\Euro Truck Simulator 2\profiles'  # 存档路径
+    local_file = profiles_path + '\\' + filename  # 文件保存路径
 
     # 下载并解压
     ftpDownload(ftp_host, ftp_user, ftp_passwd, remote_file, local_file)
-    local_file = unzip(local_file, extract_path)
+    local_file = unzip(local_file, profiles_path)
     writeData(local_file)
 
-    messagebox.showinfo('提示', '下载成功')
+    # 拷贝配置文件
+    copyList = copyConfigFiles(profiles_path + '\\' + saveName)
 
-    subprocess.run(f'explorer {extract_path}', shell= True)
+    message = f'下载成功！\n' +\
+        f'成功将{"，".join(copyList)}，\n' +\
+        f'{len(copyList)}个配置文件拷贝到新存档'
+    messagebox.showinfo('提示', message)
+
+
 
 
 def uninstallSaves():
@@ -81,6 +86,7 @@ if __name__ == '__main__':
     ret = getRemote()
     datas = ret['points']
     saveName = ret['saveName']
+    linkGuideUrl = ret['linkGuideUrl']
     dic = {}
     values = []
     for item in datas:
@@ -94,7 +100,7 @@ if __name__ == '__main__':
 
         window = tk.Tk()
         window.title('XM接档器')
-        window.geometry('500x310')  #500x300
+        window.geometry('500x320')  #500x300
         window.resizable(width=False, height=False)
         window.iconphoto(True, tk.PhotoImage(file=resource_path("res/icon1.png")))
 
@@ -108,6 +114,8 @@ if __name__ == '__main__':
 
         # 菜单
         menu = tk.Menu(window)
+        menu.add_command(label="设置配置文件路径", command=setConfigFilesPath)
+        menu.add_command(label="关于", command=lambda: messagebox.showinfo('你好：', '憨批！'))
         window.config(menu=menu)
 
         file = tk.Menu(menu, tearoff=0)
@@ -134,7 +142,8 @@ if __name__ == '__main__':
         tk.Button(frame, text='传送', font=('宋体', 12), width=16, height=1,
                   command=lambda: onSave(combox1.get(), dic, saveName)).place(x=220, y=75)
 
-        tk.Button(frame, text='打开教程', font=('宋体', 12), foreground='red', command= openPage).place(x=362, y=75)
+        tk.Button(frame, text='打开教程', font=('宋体', 12), foreground='red',
+                  command= lambda: openPage(linkGuideUrl)).place(x=362, y=75)
 
         window.mainloop()
     except Exception as e:
