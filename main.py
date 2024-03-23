@@ -4,6 +4,8 @@ from service import *
 import requests
 import sys
 
+_version = '0.2.2'
+
 # pyinstaller -w -F main.py --add-data ".\\res\\*;.\\res\\" --icon=./res/favicon.ico
 def resource_path(relative_path):
     if getattr(sys, 'frozen', False):
@@ -69,16 +71,31 @@ def onSave(value, dic, saveName):
         lines = contents.split('\n')
         index = 0
         for line in lines:
-            if line.startswith(' truck_placement'):
-                lines[index] = ' ' + dic[value]['truck']
-            if line.startswith(' trailer_placement'):
-                lines[index] = ' ' + dic[value]['trailer']
+            if line.strip().startswith('truck_placement'):
+                lines[index] = ' ' + dic[value]['truck'].strip()
+            if line.strip().startswith('trailer_placement'):
+                lines[index] = ' ' + dic[value]['trailer'].strip()
                 break
             index += 1
     with open(game_sii_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
         print('结束...')
     messagebox.showinfo('提示', '成功')
+
+
+def updateDlg():
+    updateInfo = getUpdateInfo()
+    if updateInfo['version'] > _version:
+        result = messagebox.askquestion("检测到可用的更新",f"V{_version} => V{updateInfo['version']}")
+        if result == 'no':
+            return
+        url = 'http://121.37.222.191:8020/download'
+        cmd = f"start {url}"
+        try:
+            subprocess.run(cmd, shell=True)
+        except Exception as e:
+            print(e)
+
 
 
 if __name__ == '__main__':
@@ -99,8 +116,14 @@ if __name__ == '__main__':
     try:
 
         window = tk.Tk()
-        window.title('XM接档器')
-        window.geometry('500x320')  #500x300
+        window.title('XM接档器' + 'V' + _version)
+        screenWidth = window.winfo_screenwidth()  # 获取显示区域的宽度
+        screenHeight = window.winfo_screenheight()  # 获取显示区域的高度
+        width = 500  # 设定窗口宽度 500
+        height = 320  # 设定窗口高度 320
+        left = (screenWidth - width) // 2
+        top = (screenHeight - height) // 2
+        window.geometry(f'{width}x{height}+{left}+{top}')
         window.resizable(width=False, height=False)
         window.iconphoto(True, tk.PhotoImage(file=resource_path("res/icon1.png")))
 
@@ -136,14 +159,16 @@ if __name__ == '__main__':
         btn2.place(x=40, y=60)
 
         tk.Label(frame, text='选择传送位置:', font=('宋体', 12)).place(x=220, y=10)
-        combox1 = ttk.Combobox(frame, state='readonly', width= 28)
+        combox1 = ttk.Combobox(frame, state='readonly', width=28)
         combox1.config(values=values)
         combox1.place(x=220, y=40)
         tk.Button(frame, text='传送', font=('宋体', 12), width=16, height=1,
                   command=lambda: onSave(combox1.get(), dic, saveName)).place(x=220, y=75)
 
         tk.Button(frame, text='打开教程', font=('宋体', 12), foreground='red',
-                  command= lambda: openPage(linkGuideUrl)).place(x=362, y=75)
+                  command=lambda: openPage(linkGuideUrl)).place(x=362, y=75)
+
+        updateDlg()
 
         window.mainloop()
     except Exception as e:

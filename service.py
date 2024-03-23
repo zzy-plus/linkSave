@@ -6,6 +6,7 @@ import json
 import winreg
 import subprocess
 from tkinter import filedialog, messagebox
+import requests
 
 #打开教程页面
 def openPage(url):
@@ -170,7 +171,11 @@ def copyConfigFiles(savePath):
     return copyList
 
 
-
+def getUpdateInfo():
+    resp = requests.get('http://121.37.222.191:8020/update')
+    if resp.status_code != 200:
+        return
+    return resp.json()
 
 
 if __name__ == '__main__':
